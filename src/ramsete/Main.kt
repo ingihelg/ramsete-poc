@@ -11,6 +11,8 @@ object Main {
     lateinit var follower: RamseteFollower
     private var robotPos = ArrayList<Odometry>()
 
+    fun fakeError(min: Double, max: Double) = Math.random() * (max - min) + min
+
     @JvmStatic
     fun main(args: Array<String>) {
         val waypoints =
@@ -48,7 +50,7 @@ object Main {
             driveSignal = follower.getNextDriveSignal()
             val w = (-driveSignal.left + driveSignal.right) / Constants.kWheelBase
             val v = (driveSignal.left + driveSignal.right) / 2
-            val dt = trajDt
+            val dt = trajDt * fakeError(0.1, 2.0) // TODO have someone confirm this makes sense
             val heading = w * dt
             val pos = v * dt
             val x = pos * Math.cos(current.theta + heading)

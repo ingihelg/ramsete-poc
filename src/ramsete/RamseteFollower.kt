@@ -20,7 +20,7 @@ class RamseteFollower(
     val wheelBase: Double, // size of wheel base (duh)
     val path: Trajectory // the Pathfinder path to follow
 ) {
-    private var index = 0 // the index for tracking our progress in the path
+    private var segmentIdx = 0 // the segmentIdx for tracking our progress in the path
     private var odo =
         Odometry(0.0, 0.0, 0.0) // the Odometry data class we will use for pose estimation
 
@@ -29,10 +29,10 @@ class RamseteFollower(
     }
 
     private fun calcWsubd(): Double {
-        if (index < path.length() - 1) {
-            val lastTheta = path.get(index).heading
-            val nextTheta = path.get(index + 1).heading
-            return (nextTheta - lastTheta) / path.get(index).dt
+        if (segmentIdx < path.length() - 1) {
+            val lastTheta = path.get(segmentIdx).heading
+            val nextTheta = path.get(segmentIdx + 1).heading
+            return (nextTheta - lastTheta) / path.get(segmentIdx).dt
         }
         return 0.0
     }
@@ -46,9 +46,9 @@ class RamseteFollower(
         if (isFinished()) {
             return DriveSignal(left, right)
         }
-        System.out.println("Seg " + index + " of " + (path.length() - 1))
+        System.out.println("Seg " + segmentIdx + " of " + (path.length() - 1))
 
-        val current = path.get(index) // look at segment of the path
+        val current = path.get(segmentIdx) // look at segment of the path
         val w_d = calcWsubd() // to determine wanted rate of change of heading
 
         val linearVelocity = calcVel(current.x, current.y, current.heading, current.velocity, w_d)
@@ -61,7 +61,7 @@ class RamseteFollower(
 
 
         println("Left: $left Right: $right")
-        index += 1
+        segmentIdx += 1
         return DriveSignal(left, right)
     }
 
@@ -97,5 +97,5 @@ class RamseteFollower(
 
     fun getStartOdometry() = Odometry(path.get(0).x, path.get(0).y, path.get(0).heading)
 
-    fun isFinished() = index == path.length()
+    fun isFinished() = segmentIdx == path.length()
 }

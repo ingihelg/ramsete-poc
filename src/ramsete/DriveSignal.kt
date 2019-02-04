@@ -5,4 +5,4 @@ package ramsete
  * right motor setting, and whether or not the brake mode is
  * enabled.
  */
-data class DriveSignal(val left: Double, val right: Double, val brake_mode: Boolean = false)
+data class DriveSignal(val left: Double, val right: Double, val brake: Boolean = false)
