@@ -21,7 +21,14 @@ object Main {
             )
 
         val config =
-            Trajectory.Config(Trajectory.FitMethod.HERMITE_QUINTIC, Trajectory.Config.SAMPLES_HIGH, 0.05, 1.7, 2.0, 60.0)
+            Trajectory.Config(
+                Trajectory.FitMethod.HERMITE_QUINTIC, // fit method
+                Trajectory.Config.SAMPLES_HIGH, // samples
+                0.02, // dt
+                Constants.kV, // max velocity
+                Constants.kA, // max acceleration
+                Constants.kJ // max jerk
+            )
         val traj = Pathfinder.generate(waypoints, config)
 
         follower = RamseteFollower(
@@ -33,6 +40,7 @@ object Main {
         robotPos.add(follower.getStartOdometry())
         var odometryIdx = 0
         var driveSignal: DriveSignal
+        val trajDt = traj.get(0).dt
 
         while (!follower.isFinished()) {
             val current = robotPos[odometryIdx]
@@ -40,7 +48,7 @@ object Main {
             driveSignal = follower.getNextDriveSignal()
             val w = (-driveSignal.left + driveSignal.right) / Constants.kWheelBase
             val v = (driveSignal.left + driveSignal.right) / 2
-            val dt = .02
+            val dt = trajDt
             val heading = w * dt
             val pos = v * dt
             val x = pos * Math.cos(current.theta + heading)
