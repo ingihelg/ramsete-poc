@@ -1,4 +1,2 @@
 # ramsete
-I will update this later.
-
-Description of what Ramsete is: (link)[https://garfielf.net/Ramsete]
+[A brief description of what Ramsete is.](https://garfielf.net/Ramsete)
