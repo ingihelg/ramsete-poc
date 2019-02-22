@@ -6,15 +6,18 @@ import java.util.ArrayList
 import jaci.pathfinder.Pathfinder
 import jaci.pathfinder.Trajectory
 
-
 object Main {
     lateinit var follower: RamseteFollower
     private var robotPos = ArrayList<Odometry>()
 
+    /**
+     * Simulates "snowball"-like error.
+     */
     fun fakeError(min: Double, max: Double) = Math.random() * (max - min) + min
 
     @JvmStatic
     fun main(args: Array<String>) {
+        // Create a set of Waypoints to generate out Pathfinder path.
         val waypoints =
             arrayOf(
                 Waypoint(0.0, 0.0, 0.0),
@@ -22,6 +25,7 @@ object Main {
                 Waypoint(8.0, 4.0, Math.toRadians(90.0))
             )
 
+        // Some Pathfinder configuration. This is relatively standard stuff, nothing fancy here
         val config =
             Trajectory.Config(
                 Trajectory.FitMethod.HERMITE_QUINTIC, // fit method
@@ -31,19 +35,25 @@ object Main {
                 Constants.kA, // max acceleration
                 Constants.kJ // max jerk
             )
+
+        // Generate the actual trajectory using our waypoints and Pathfinder configuration
         val traj = Pathfinder.generate(waypoints, config)
 
+        // Create a new RamseteFollower
         follower = RamseteFollower(
             wheelBase = Constants.kWheelBase,
             path = traj,
             b = Constants.kAutoB,
             zeta = Constants.kAutoZeta
         )
+
+        // Begin tracking robot position
         robotPos.add(follower.getStartOdometry())
         var odometryIdx = 0
         var driveSignal: DriveSignal
         val trajDt = traj.get(0).dt
 
+        // Until we are finished following the path, do this
         while (!follower.isFinished()) {
             val current = robotPos[odometryIdx]
             follower.setOdometryTo(current)
@@ -65,6 +75,7 @@ object Main {
             odometryIdx++
         }
 
+        // Log to indicate we are done following the path
         println("That's all folks!")
     }
 }

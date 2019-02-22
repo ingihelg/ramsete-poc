@@ -1,5 +1,8 @@
 package ramsete
 
+/**
+ * A simple location for storing all the "magic-number" like things used in the project.
+ */
 object Constants {
     const val kWheelBase = 2.5
     const val kAutoB: Double = 15.0 // must be greater than 0.0. increases the correction
