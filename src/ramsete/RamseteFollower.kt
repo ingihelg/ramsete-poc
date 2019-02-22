@@ -114,7 +114,9 @@ class RamseteFollower(
     /**
      * Set the follower odometry to be a given odometry.
      */
-    fun setOdometryTo(desire: Odometry) = odo = desire
+    fun setOdometryTo(desire: Odometry) {
+        odo = desire
+    }
 
     /**
      * Get the odometry of the path at its beginning.

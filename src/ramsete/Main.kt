@@ -48,7 +48,7 @@ object Main {
         )
 
         // Begin tracking robot position
-        robotPos.add(follower.getStartOdometry())
+        robotPos.add(follower.getInitialOdometry())
         var odometryIdx = 0
         var driveSignal: DriveSignal
         val trajDt = traj.get(0).dt
